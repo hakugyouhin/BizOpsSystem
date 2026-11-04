@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>見積書作成</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            text-align: right;
+            font-size: 14px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 160px auto 30px;
+            padding: 0 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 0;
+            font-weight: bold;
+            position: fixed;
+            top: 50px;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px 0;
+            z-index: 999;
+            border-bottom: 2px solid #007bff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step {
+            background: white;
+            border-left: 4px solid #007bff;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+        }
+
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-add {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .file-input-label:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="file"],
+        input[type="hidden"] {
+            display: none;
+        }
+
+        .file-path {
+            display: inline-block;
+            margin-left: 10px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .row-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+            font-size: 13px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: end;
+        }
+
+        .input-row input {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .row-header,
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        センチュリーアクセス＆サイエンス（CSC）株式会社
+    </header>
+
+    <div class="container">
+        <div class="title">見積書作成</div>
+
+        <!-- ステップ①：見積依頼内容をご記入ください -->
+        <div class="step">
+            <div class="step-title">ステップ①：見積依頼内容をご記入ください。</div>
+
+            <div class="row-header">
+                <div>会社名</div>
+                <div>案件名</div>
+                <div>担当者</div>
+                <div>見積期限</div>
+                <div>期間（ヶ月）</div>
+                <div>工数（人月）</div>
+                <div></div>
+            </div>
+
+            <div id="estimate-rows-container">
+                <!-- 動的に追加される -->
+            </div>
+            <button class="btn btn-add" onclick="addEstimateRow()">+ 行を追加</button>
+            <div id="message-step1" class="message"></div>
+        </div>
+
+        <!-- ステップ②：見積内容作成 -->
+        <div class="step">
+            <div class="step-title">ステップ②：管理ファイル＆金額リストを指定ください。</div>
+
+            <div class="form-group">
+                <label>管理ファイル（フルパスを入力）</label>
+                <input type="text" id="management-file-path-input" placeholder="例：G:\マイドライブ\96_tmp\20261010\請求書＆注文書生成_双日用.xlsm" value="">
+                <small style="color: #666; margin-top: 5px; display: block;">※ ファイルの完全パスをコピー＆ペーストしてください</small>
+            </div>
+
+            <div class="form-group">
+                <label>金額リスト（フルパスを入力）</label>
+                <input type="text" id="price-list-path-input" placeholder="例：G:\マイドライブ\96_tmp\20261010\派遣業務管理台帳_統合.xlsx" value="">
+                <small style="color: #666; margin-top: 5px; display: block;">※ ファイルの完全パスをコピー＆ペーストしてください</small>
+            </div>
+
+            <button class="btn btn-primary" onclick="writeContent()">見積内容作成</button>
+            <div id="message-step2" class="message"></div>
+
+            <!-- 見積内容作成リスト -->
+            <div class="table-container" id="step2-result-container" style="display:none; margin-top: 20px;">
+                <h4 style="margin-bottom: 10px;">作成した見積内容</h4>
+                <table id="step2-result-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>会社名</th>
+                            <th>案件名</th>
+                            <th>担当者</th>
+                            <th>見積期限</th>
+                            <th>期間（ヶ月）</th>
+                            <th>単価</th>
+                            <th>金額</th>
+                        </tr>
+                    </thead>
+                    <tbody id="step2-result-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ステップ③：見積書格納フォルダを指定 -->
+        <div class="step">
+            <div class="step-title">ステップ③：見積書格納フォルダを指定ください。</div>
+
+            <div class="form-group">
+                <label>フォルダパス（フルパスを入力）</label>
+                <input type="text" id="output-folder-path-input" placeholder="例：G:\マイドライブ\96_tmp\20261010" value="">
+                <small style="color: #666; margin-top: 5px; display: block;">※ フォルダの完全パスをコピー＆ペーストしてください</small>
+                <small style="color: #999; margin-top: 5px; display: block;">指定されたフォルダに見積書ファイルが保存されます</small>
+            </div>
+        </div>
+
+        <!-- ステップ④：見積書作成 -->
+        <div class="step">
+            <div class="step-title">ステップ④：見積書を作成してください。</div>
+
+            <button class="btn btn-primary" onclick="generateEstimate()">見積書作成</button>
+            <div id="message-step4" class="message"></div>
+
+            <div class="table-container" id="result-container" style="display:none;">
+                <table id="result-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>生成ファイル名</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ステップ⑤：PDF見積書作成 -->
+        <div class="step">
+            <div class="step-title">ステップ⑤：正式版見積書を作成ください。</div>
+
+            <button class="btn btn-primary" onclick="generatePDF()">PDF見積書作成</button>
+            <div id="message-step5" class="message"></div>
+
+            <div class="table-container" id="pdf-result-container" style="display:none;">
+                <table id="pdf-result-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>生成PDFファイル名</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pdf-result-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // グローバル変数
+        // ========================================
+        let selectedFiles = {
+            managementFile: '',
+            priceList: '',
+            outputFolder: ''
+        };
+
+        let currentSessionId = '';
+        let currentManagementFilePath = '';
+        let currentPriceListPath = '';
+        let generatedEstimateFiles = [];  // ステップ④で生成したファイル一覧
+
+        // ========================================
+        // ステップ①：見積入力行を動的に管理
+        // ========================================
+
+        function addEstimateRow(index = null) {
+            const container = document.getElementById('estimate-rows-container');
+            const rowCount = container.querySelectorAll('.input-row').length;
+            const newIndex = index !== null ? index : rowCount;
+
+            const rowHtml = `
+                <div class="input-row" data-row-index="${newIndex}">
+                    <input type="text" placeholder="例：双日" class="company-input" value="">
+                    <input type="text" placeholder="例：クレジットカード審査システム" class="project-input" value="">
+                    <input type="text" placeholder="例：山田太郎" class="person-input" value="">
+                    <input type="text" placeholder="例：2026/11/1 ～ 2027/3/31" class="deadline-input" value="">
+                    <input type="text" placeholder="例：5.00" class="period-input" value="">
+                    <input type="text" placeholder="例：5.00" class="workload-input" value="">
+                    <button class="btn btn-danger" onclick="removeEstimateRow(this)">削除</button>
+                </div>
+            `;
+
+            container.insertAdjacentHTML('beforeend', rowHtml);
+            console.log(`見積入力行を追加しました（行番号: ${newIndex + 1}）`);
+        }
+
+        function removeEstimateRow(button) {
+            button.closest('.input-row').remove();
+            console.log('見積入力行を削除しました');
+        }
+
+        function getEstimateRows() {
+            const rows = [];
+            document.querySelectorAll('.input-row').forEach(rowEl => {
+                const company = rowEl.querySelector('.company-input').value.trim();
+                const project = rowEl.querySelector('.project-input').value.trim();
+                const person = rowEl.querySelector('.person-input').value.trim();
+                const deadline = rowEl.querySelector('.deadline-input').value.trim();
+                const periodStr = rowEl.querySelector('.period-input').value.trim();
+                const workloadStr = rowEl.querySelector('.workload-input').value.trim();
+
+                // 期間と工数をテキストで保存（数値変換時のエラー回避）
+                const row = {
+                    company: company,
+                    project: project,
+                    person: person,
+                    deadline: deadline,
+                    period: periodStr ? parseFloat(periodStr) : '',
+                    workload: workloadStr ? parseFloat(workloadStr) : ''
+                };
+                rows.push(row);
+            });
+            return rows;
+        }
+
+        // ========================================
+        // ステップ②：ファイル選択
+        // ========================================
+
+        function handleFileSelect(input, fileType) {
+            if (input.files.length > 0) {
+                const fileName = input.files[0].name;
+                selectedFiles[fileType] = fileName;
+
+                // ファイル名を表示
+                let displayElementId = '';
+                if (fileType === 'managementFile') {
+                    displayElementId = 'management-file-path';
+                } else if (fileType === 'priceList') {
+                    displayElementId = 'price-list-path';
+                }
+
+                if (displayElementId) {
+                    document.getElementById(displayElementId).textContent = fileName;
+                }
+                console.log(`${fileType} を選択しました: ${fileName}`);
+            }
+        }
+
+        function handleFolderSelect(input) {
+            if (input.files.length > 0) {
+                const folderName = input.files[0].webkitRelativePath.split('/')[0];
+                selectedFiles.outputFolder = folderName;
+                document.getElementById('output-folder-path').textContent = folderName;
+                console.log(`フォルダを選択しました: ${folderName}`);
+            }
+        }
+
+        // ========================================
+        // API呼び出し
+        // ========================================
+
+        async function writeContent() {
+            const rows = getEstimateRows();
+            const messageEl = document.getElementById('message-step2');
+
+            if (rows.length === 0) {
+                showMessage(messageEl, 'error', 'エラー：見積データが入力されていません');
+                return;
+            }
+
+            // ファイルパスをテキスト入力から取得
+            const managementPath = document.getElementById('management-file-path-input').value.trim();
+            const priceListPath = document.getElementById('price-list-path-input').value.trim();
+
+            if (!managementPath || !priceListPath) {
+                showMessage(messageEl, 'error', 'エラー：管理ファイルと金額リストの両方を指定してください');
+                return;
+            }
+
+            showMessage(messageEl, 'info', '⏳ 処理中...');
+
+            try {
+                const response = await fetch('/api/write-content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        rows: rows,
+                        managementFile: managementPath,
+                        priceList: priceListPath
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentSessionId = data.session_id;
+                    currentManagementFilePath = managementPath;
+                    currentPriceListPath = priceListPath;
+                    showMessage(messageEl, 'success', `✅ ${data.message}`);
+
+                    // 見積内容リストを表示
+                    displayStep2ResultTable(data.data);
+                    console.log('見積内容が保存されました:', data);
+                } else {
+                    showMessage(messageEl, 'error', `❌ ${data.message}`);
+                }
+            } catch (error) {
+                showMessage(messageEl, 'error', `❌ エラー: ${error.message}`);
+                console.error('API呼び出しエラー:', error);
+            }
+        }
+
+        async function generateEstimate() {
+            const messageEl = document.getElementById('message-step4');
+            const outputFolder = document.getElementById('output-folder-path-input').value.trim();
+
+            if (!currentSessionId) {
+                showMessage(messageEl, 'error', '❌ エラー：ステップ②を先に実行してください');
+                return;
+            }
+
+            if (!outputFolder) {
+                showMessage(messageEl, 'error', '❌ エラー：ステップ③でフォルダパスを指定してください');
+                return;
+            }
+
+            showMessage(messageEl, 'info', '⏳ 見積書を生成中...');
+
+            try {
+                const response = await fetch('/api/generate-estimate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        session_id: currentSessionId,
+                        output_folder: outputFolder,
+                        management_file: currentManagementFilePath,
+                        price_list: currentPriceListPath
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage(messageEl, 'success', `✅ ${data.message}\n\n保存先：${outputFolder}`);
+                    displayResultTable(data.files);
+                    // ステップ④で生成したファイル一覧を保存
+                    generatedEstimateFiles = data.files;
+                    console.log('見積書が生成されました:', data);
+                    console.log('生成ファイル一覧:', generatedEstimateFiles);
+                } else {
+                    showMessage(messageEl, 'error', `❌ ${data.message}`);
+                }
+            } catch (error) {
+                showMessage(messageEl, 'error', `❌ エラー: ${error.message}`);
+                console.error('API呼び出しエラー:', error);
+            }
+        }
+
+        async function generatePDF() {
+            const messageEl = document.getElementById('message-step5');
+            const outputFolder = document.getElementById('output-folder-path-input').value.trim();
+
+            if (!outputFolder) {
+                showMessage(messageEl, 'error', '❌ エラー：ステップ③でフォルダパスを指定してください');
+                return;
+            }
+
+            if (generatedEstimateFiles.length === 0) {
+                showMessage(messageEl, 'error', '❌ エラー：ステップ④で見積書を生成してください');
+                return;
+            }
+
+            showMessage(messageEl, 'info', '⏳ PDF見積書を生成中...');
+
+            try {
+                const response = await fetch('/api/generate-pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        output_folder: outputFolder,
+                        excel_files: generatedEstimateFiles
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage(messageEl, 'success', `✅ ${data.message}\n\n保存先：${outputFolder}`);
+                    displayPDFResultTable(data.files);
+                    console.log('PDF見積書が生成されました:', data);
+                } else {
+                    showMessage(messageEl, 'error', `❌ ${data.message}`);
+                }
+            } catch (error) {
+                showMessage(messageEl, 'error', `❌ エラー: ${error.message}`);
+                console.error('API呼び出しエラー:', error);
+            }
+        }
+
+        // ========================================
+        // UI ユーティリティ
+        // ========================================
+
+        function showMessage(element, type, message) {
+            element.className = `message ${type}`;
+            element.textContent = message;
+        }
+
+        function displayStep2ResultTable(rows) {
+            const container = document.getElementById('step2-result-container');
+            const tbody = document.getElementById('step2-result-body');
+            tbody.innerHTML = '';
+
+            rows.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                let unitPriceDisplay = '-';
+                let amountDisplay = '-';
+
+                // 単価と金額を計算して表示
+                if (row.unit_price !== undefined && row.unit_price !== null) {
+                    unitPriceDisplay = row.unit_price > 0 ? `¥${row.unit_price.toLocaleString()}` : '-';
+                }
+
+                if (row.amount !== undefined && row.amount !== null) {
+                    amountDisplay = row.amount > 0 ? `¥${row.amount.toLocaleString()}` : '-';
+                } else if (row.period && row.period > 0) {
+                    amountDisplay = 'エラー（単価が見つかりません）';
+                }
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${row.company || '-'}</td>
+                    <td>${row.project || '-'}</td>
+                    <td>${row.person || '-'}</td>
+                    <td>${row.deadline || '-'}</td>
+                    <td>${row.period || '-'}</td>
+                    <td>${unitPriceDisplay}</td>
+                    <td>${amountDisplay}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            container.style.display = 'block';
+        }
+
+        function displayResultTable(files) {
+            const container = document.getElementById('result-container');
+            const tbody = document.getElementById('result-body');
+            tbody.innerHTML = '';
+
+            files.forEach((file, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${file}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            container.style.display = 'block';
+        }
+
+        function displayPDFResultTable(files) {
+            const container = document.getElementById('pdf-result-container');
+            const tbody = document.getElementById('pdf-result-body');
+            tbody.innerHTML = '';
+
+            files.forEach((file, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${file}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            container.style.display = 'block';
+        }
+
+        // ========================================
+        // 初期化
+        // ========================================
+
+        async function loadConfig() {
+            try {
+                const response = await fetch('/api/config');
+                const data = await response.json();
+
+                if (data.success) {
+                    const config = data.data;
+                    document.getElementById('management-file-path-input').value = config.managementFile || '';
+                    document.getElementById('price-list-path-input').value = config.priceListFile || '';
+                    document.getElementById('output-folder-path-input').value = config.outputFolder || '';
+                    console.log('設定を読み込みました');
+                }
+            } catch (error) {
+                console.log('設定ファイルがない場合はスキップ');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('ページが読み込まれました');
+            // 最初の1行を追加
+            addEstimateRow();
+            // 設定を読み込み
+            loadConfig();
+        });
+    </script>
+</body>
+</html>

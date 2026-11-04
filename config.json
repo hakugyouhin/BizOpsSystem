@@ -1,0 +1,31 @@
+{
+  "app": {
+    "name": "見積書作成システム",
+    "version": "1.0.0",
+    "description": "Flask ベースの見積書自動生成システム"
+  },
+  "files": {
+    "managementFile": "G:\\マイドライブ\\96_tmp\\20261010\\請求書＆注文書生成_双日用_Excel版2.xlsx",
+    "priceListFile": "G:\\マイドライブ\\96_tmp\\20261010\\派遣業務管理台帳_統合.xlsx",
+    "outputFolder": "G:\\マイドライブ\\96_tmp\\20261010",
+    "templateFolder": "C:\\Server\\BizOps\\OfficeTemplate",
+    "dataFolder": "C:\\Server\\BizOps\\data"
+  },
+  "excel": {
+    "templateFile": "見積書テンプレート.xlsx",
+    "managementSheet": "見積書",
+    "priceListSheet": "金額リスト",
+    "estimateNoPrefix": "N",
+    "estimateDateFormat": "%Y%m%d",
+    "headerRowRemovalEnabled": true
+  },
+  "pdf": {
+    "enabled": true,
+    "libreOfficePath": "C:\\Program Files\\LibreOffice\\program\\soffice.exe",
+    "timeout": 60
+  },
+  "logging": {
+    "level": "INFO",
+    "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  }
+}
