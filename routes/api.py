@@ -6,6 +6,8 @@ REST API ルートを定義
 
 import uuid
 import json
+import os
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
@@ -13,6 +15,11 @@ from flask import request, jsonify
 
 from utils.excel_utils import write_to_excel, check_excel_macros, generate_estimate_sheets
 from utils.pdf_utils import generate_pdf_from_excel
+from utils.drive_utils import (
+    is_google_drive_path, parse_google_drive_path,
+    download_file_from_drive, find_file_id_by_name,
+    find_folder_id_by_name, upload_file_to_drive
+)
 
 # グローバルなアプリケーション参照（外部から渡される）
 app = None
@@ -49,20 +56,108 @@ def register_api_routes(flask_app, estimate_data_dict):
                     'message': 'エラー：管理ファイルと金額リストの両方を指定してください'
                 }), 400
 
-            # ファイル存在確認
-            mgmt_path = Path(management_file)
-            price_path = Path(price_list)
+            # ローカルパス / Google Drive パスの判定と取得
+            app.logger.info(f'管理ファイル: {management_file}')
+            app.logger.info(f'金額リスト: {price_list}')
 
-            if not mgmt_path.exists():
+            # 管理ファイルを取得
+            mgmt_local_path = None
+            try:
+                if is_google_drive_path(management_file):
+                    # Google Drive パスの場合
+                    app.logger.info('管理ファイルは Google Drive パス')
+                    mgmt_parsed = parse_google_drive_path(management_file)
+
+                    try:
+                        if mgmt_parsed['type'] == 'folder_id':
+                            # フォルダ ID で指定
+                            file_id = find_file_id_by_name('請求書＆注文書生成_双日用_Excel版2.xlsx', mgmt_parsed['folder_id'])
+                            if not file_id:
+                                raise Exception('ファイルが見つかりません')
+                        else:
+                            # gdrive://folder/file 形式
+                            folder_id = find_folder_id_by_name(mgmt_parsed['folder_name'])
+                            file_id = find_file_id_by_name(mgmt_parsed['file_name'], folder_id)
+                            if not file_id:
+                                raise Exception('ファイルが見つかりません')
+
+                        # 一時ファイルに保存
+                        mgmt_local_path = os.path.join(tempfile.gettempdir(), f'mgmt_{uuid.uuid4()}.xlsx')
+                        download_file_from_drive(file_id, mgmt_local_path)
+                        app.logger.info(f'管理ファイルをダウンロード: {mgmt_local_path}')
+
+                    except Exception as drive_error:
+                        app.logger.error(f'Google Drive アクセスエラー: {drive_error}')
+                        return jsonify({
+                            'success': False,
+                            'message': f'エラー：Google Drive ファイルにアクセスできません\n{str(drive_error)}'
+                        }), 400
+                else:
+                    # ローカルパスの場合
+                    app.logger.info('管理ファイルはローカルパス')
+                    mgmt_path = Path(management_file)
+                    if not mgmt_path.exists():
+                        return jsonify({
+                            'success': False,
+                            'message': f'エラー：管理ファイルが見つかりません\n{management_file}'
+                        }), 400
+                    mgmt_local_path = str(mgmt_path)
+
+            except Exception as e:
+                app.logger.error(f'管理ファイル取得エラー: {e}')
                 return jsonify({
                     'success': False,
-                    'message': f'エラー：管理ファイルが見つかりません\n{management_file}'
+                    'message': f'エラー：管理ファイルの取得に失敗しました\n{str(e)}'
                 }), 400
 
-            if not price_path.exists():
+            # 金額リストを取得
+            price_local_path = None
+            try:
+                if is_google_drive_path(price_list):
+                    # Google Drive パスの場合
+                    app.logger.info('金額リストは Google Drive パス')
+                    price_parsed = parse_google_drive_path(price_list)
+
+                    try:
+                        if price_parsed['type'] == 'folder_id':
+                            # フォルダ ID で指定
+                            file_id = find_file_id_by_name('派遣業務管理台帳_統合.xlsx', price_parsed['folder_id'])
+                            if not file_id:
+                                raise Exception('ファイルが見つかりません')
+                        else:
+                            # gdrive://folder/file 形式
+                            folder_id = find_folder_id_by_name(price_parsed['folder_name'])
+                            file_id = find_file_id_by_name(price_parsed['file_name'], folder_id)
+                            if not file_id:
+                                raise Exception('ファイルが見つかりません')
+
+                        # 一時ファイルに保存
+                        price_local_path = os.path.join(tempfile.gettempdir(), f'price_{uuid.uuid4()}.xlsx')
+                        download_file_from_drive(file_id, price_local_path)
+                        app.logger.info(f'金額リストをダウンロード: {price_local_path}')
+
+                    except Exception as drive_error:
+                        app.logger.error(f'Google Drive アクセスエラー: {drive_error}')
+                        return jsonify({
+                            'success': False,
+                            'message': f'エラー：Google Drive ファイルにアクセスできません\n{str(drive_error)}'
+                        }), 400
+                else:
+                    # ローカルパスの場合
+                    app.logger.info('金額リストはローカルパス')
+                    price_path = Path(price_list)
+                    if not price_path.exists():
+                        return jsonify({
+                            'success': False,
+                            'message': f'エラー：金額リストファイルが見つかりません\n{price_list}'
+                        }), 400
+                    price_local_path = str(price_path)
+
+            except Exception as e:
+                app.logger.error(f'金額リスト取得エラー: {e}')
                 return jsonify({
                     'success': False,
-                    'message': f'エラー：金額リストファイルが見つかりません\n{price_list}'
+                    'message': f'エラー：金額リストの取得に失敗しました\n{str(e)}'
                 }), 400
 
             # バリデーション
@@ -88,20 +183,20 @@ def register_api_routes(flask_app, estimate_data_dict):
             app.logger.info(f'見積内容を処理中...')
             app.logger.info(f'見積件数: {len(cleaned_rows)}')
 
-            # Excelファイルに書き込む
+            # Excelファイルに書き込む（取得したローカルパスを使用）
             estimate_results = []
             write_success = False
             write_message = ''
 
-            if management_file:
+            if mgmt_local_path and price_local_path:
                 try:
-                    estimate_results = write_to_excel(management_file, cleaned_rows, price_list)
+                    estimate_results = write_to_excel(mgmt_local_path, cleaned_rows, price_local_path)
                     write_success = True
-                    write_message = f'✅ ファイル「{Path(management_file).name}」のシート「見積書」に{len(estimate_results)}件の見積データを書き込みました'
+                    write_message = f'✅ ファイルのシート「見積書」に{len(estimate_results)}件の見積データを書き込みました'
                     app.logger.info(write_message)
 
                     # マクロ情報を確認
-                    macro_result = check_excel_macros(management_file)
+                    macro_result = check_excel_macros(mgmt_local_path)
                     if macro_result['has_macros']:
                         write_message += f'\n\n📊 マクロ情報:\n{macro_result["macro_info"]}'
                         app.logger.info(f'マクロ確認: {macro_result["macro_info"]}')
@@ -116,8 +211,10 @@ def register_api_routes(flask_app, estimate_data_dict):
             # データをメモリに保存
             estimate_data[session_id] = {
                 'rows': cleaned_rows,
-                'management_file': management_file,
-                'price_list': price_list,
+                'management_file': mgmt_local_path,
+                'price_list': price_local_path,
+                'management_file_original': management_file,
+                'price_list_original': price_list,
                 'created_at': datetime.now().isoformat()
             }
 
