@@ -47,7 +47,7 @@ CORS(app)
 # 設定
 # ========================================
 
-PORT = int(os.getenv('PORT', 3000))
+PORT = int(os.getenv('PORT', 8080))
 NODE_ENV = os.getenv('NODE_ENV', 'development')
 
 # データ保存ディレクトリ
