@@ -16,13 +16,18 @@ steps:
       - 'gcr.io/$PROJECT_ID/bizopssystem:latest'
 
   # Step 3: Deploy to Cloud Run
-  - name: 'gcr.io/cloud-builders/gke-deploy'
+  - name: 'gcr.io/cloud-builders/gcloud'
     args:
       - 'run'
-      - '-f=.'
-      - '-i'
+      - 'deploy'
+      - 'bizopssystem'
+      - '--image'
       - 'gcr.io/$PROJECT_ID/bizopssystem:latest'
-      - '-o=/workspace/output'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
 
 images:
   - 'gcr.io/$PROJECT_ID/bizopssystem:latest'
