@@ -1,0 +1,29 @@
+steps:
+  # Step 1: Build Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/bizopssystem:latest'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/bizopssystem:$SHORT_SHA'
+      - '.'
+
+  # Step 2: Push to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/bizopssystem:latest'
+
+  # Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    args:
+      - 'run'
+      - '-f=.'
+      - '-i'
+      - 'gcr.io/$PROJECT_ID/bizopssystem:latest'
+      - '-o=/workspace/output'
+
+images:
+  - 'gcr.io/$PROJECT_ID/bizopssystem:latest'
+  - 'gcr.io/$PROJECT_ID/bizopssystem:$SHORT_SHA'
