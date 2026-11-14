@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>見積書作成</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            text-align: right;
+            font-size: 14px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .header-brand a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .header-brand a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 160px auto 30px;
+            padding: 0 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 0;
+            font-weight: bold;
+            position: fixed;
+            top: 50px;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px 0;
+            z-index: 999;
+            border-bottom: 2px solid #007bff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step {
+            background: white;
+            border-left: 4px solid #007bff;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
+        }
+
+        .table-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #545b62;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-add {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .message.info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        .row-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+            font-size: 13px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: end;
+        }
+
+        .input-row input {
+            margin-bottom: 0;
+        }
+
+        .home-link {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 6px 12px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .home-link:hover {
+            background-color: #545b62;
+        }
+
+        @media (max-width: 768px) {
+            .row-header,
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-brand">
+            <a href="/">← ホーム</a>
+        </div>
+        <div>センチュリーアクセス＆サイエンス（CSC）株式会社</div>
+    </header>
+
+    <div class="container">
+        <div class="title">見積書作成</div>
+
+        <!-- ステップ①：見積依頼内容をご記入ください -->
+        <div class="step">
+            <div class="step-title">ステップ①：見積依頼内容をご記入ください。</div>
+
+            <div class="row-header">
+                <div>会社名</div>
+                <div>案件名</div>
+                <div>担当者</div>
+                <div>見積期限</div>
+                <div>期間（ヶ月）</div>
+                <div>工数（人月）</div>
+                <div></div>
+            </div>
+
+            <div id="estimate-rows-container">
+                <!-- 動的に追加される -->
+            </div>
+            <button class="btn btn-add" onclick="addEstimateRow()">+ 行を追加</button>
+            <div id="message-step1" class="message"></div>
+        </div>
+
+        <!-- ステップ②：見積内容作成 -->
+        <div class="step">
+            <div class="step-title">ステップ②：管理ファイル＆金額リストを指定ください。</div>
+
+            <div class="form-group">
+                <label>管理ファイル（フルパスを入力）</label>
+                <input type="text" id="management-file-path-input" placeholder="例：G:\マイドライブ\96_tmp\20261010\請求書＆注文書生成_双日用.xlsm" value="">
+                <small style="color: #666; margin-top: 5px; display: block;">※ ファイルの完全パスをコピー＆ペーストしてください</small>
+            </div>
+
+            <div class="form-group">
+                <label>金額リスト（フルパスを入力）</label>
+                <input type="text" id="price-list-path-input" placeholder="例：G:\マイドライブ\96_tmp\20261010\派遣業務管理台帳_統合.xlsx" value="">
+                <small style="color: #666; margin-top: 5px; display: block;">※ ファイルの完全パスをコピー＆ペーストしてください</small>
+            </div>
+
+            <button class="btn btn-primary" onclick="writeContent()">見積内容作成</button>
+            <div id="message-step2" class="message"></div>
+
+            <!-- 見積内容作成リスト -->
+            <div class="table-container" id="step2-result-container" style="display:none; margin-top: 20px;">
+                <h4 style="margin-bottom: 10px;">作成した見積内容</h4>
+                <table id="step2-result-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>会社名</th>
+                            <th>案件名</th>
+                            <th>担当者</th>
+                            <th>見積期限</th>
+                            <th>期間（ヶ月）</th>
+                            <th>単価</th>
+                            <th>金額</th>
+                        </tr>
+                    </thead>
+                    <tbody id="step2-result-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ステップ③：見積書格納フォルダを指定 -->
+        <div class="step">
+            <div class="step-title">ステップ③：見積書格納フォルダを指定ください。</div>
+
+            <div class="form-group">
+                <label>フォルダパス（フルパスを入力）</label>
+                <input type="text" id="output-folder-path-input" placeholder="例：G:\マイドライブ\96_tmp\20261010" value="">
+                <small style="color: #666; margin-top: 5px; display: block;">※ フォルダの完全パスをコピー＆ペーストしてください</small>
+                <small style="color: #999; margin-top: 5px; display: block;">指定されたフォルダに見積書ファイルが保存されます</small>
+            </div>
+        </div>
+
+        <!-- ステップ④：見積書作成 -->
+        <div class="step">
+            <div class="step-title">ステップ④：見積書を作成してください。</div>
+
+            <button class="btn btn-primary" onclick="generateEstimate()">見積書作成</button>
+            <div id="message-step4" class="message"></div>
+
+            <div class="table-container" id="result-container" style="display:none;">
+                <table id="result-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>生成ファイル名</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ステップ⑤：PDF見積書作成 -->
+        <div class="step">
+            <div class="step-title">ステップ⑤：正式版見積書を作成ください。</div>
+
+            <button class="btn btn-primary" onclick="generatePDF()">PDF見積書作成</button>
+            <div id="message-step5" class="message"></div>
+
+            <div class="table-container" id="pdf-result-container" style="display:none;">
+                <table id="pdf-result-table">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>生成PDFファイル名</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pdf-result-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static_files', filename='js/estimate.js') }}"></script>
+</body>
+</html>

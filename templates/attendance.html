@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>勤務管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            text-align: right;
+            font-size: 14px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .header-brand a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .header-brand a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 160px auto 30px;
+            padding: 0 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 0;
+            font-weight: bold;
+            position: fixed;
+            top: 50px;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px 0;
+            z-index: 999;
+            border-bottom: 2px solid #6c757d;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step {
+            background: white;
+            border-left: 4px solid #6c757d;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .info-box {
+            background-color: #e8e8e8;
+            border: 2px solid #c0c0c0;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .info-box h3 {
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background-color: #ffc107;
+            color: #333;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+        }
+
+        .feature-card h4 {
+            color: #666;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            color: #999;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-brand">
+            <a href="/">← ホーム</a>
+        </div>
+        <div>センチュリーアクセス＆サイエンス（CSC）株式会社</div>
+    </header>
+
+    <div class="container">
+        <div class="title">勤務管理</div>
+
+        <div class="step">
+            <div class="step-title">機能情報</div>
+
+            <div class="info-box">
+                <h3>👥 勤務管理について</h3>
+                <p>このページは、従業員の勤務時間、休暇、残業等を一元管理する機能です。</p>
+                <ul>
+                    <li>従業員情報の登録・管理</li>
+                    <li>日々の勤務時間記録（打刻）</li>
+                    <li>有給休暇・特別休暇の管理</li>
+                    <li>残業時間の集計と分析</li>
+                    <li>給与計算連携</li>
+                    <li>勤務レポート・統計</li>
+                </ul>
+                <span class="status-badge">開発予定中</span>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">主要機能</div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>⏰ 打刻管理</h4>
+                    <p>従業員の出勤・退勤時間を自動記録。モバイル対応で場所を選ばず利用可能。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📅 勤務スケジュール</h4>
+                    <p>シフト表の作成・管理。複数パターンのシフト設定に対応。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📊 勤務レポート</h4>
+                    <p>日報、月報、年報を自動生成。CSV出力対応。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔔 アラート機能</h4>
+                    <p>長時間労働や残業超過時に自動通知。コンプライアンス対応。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>💰 給与連携</h4>
+                    <p>勤務データを給与計算システムに自動連携。</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📱 モバイル対応</h4>
+                    <p>スマートフォンからの打刻・休暇申請に対応。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">開発ロードマップ</div>
+
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th style="border: 1px solid #ddd; padding: 10px;">フェーズ</th>
+                        <th style="border: 1px solid #ddd; padding: 10px;">機能</th>
+                        <th style="border: 1px solid #ddd; padding: 10px;">ステータス</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">Phase 1</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">従業員情報管理</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">⏳ 予定</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="border: 1px solid #ddd; padding: 10px;">Phase 2</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">出退勤管理＆打刻</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">⏳ 予定</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">Phase 3</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">休暇管理</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">⏳ 予定</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="border: 1px solid #ddd; padding: 10px;">Phase 4</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">勤務レポート・分析</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">⏳ 予定</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">Phase 5</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">給与計算連携</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">⏳ 予定</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

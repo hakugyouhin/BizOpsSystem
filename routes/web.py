@@ -26,8 +26,28 @@ def register_web_routes(flask_app):
 
     @app.route('/')
     def index():
-        """メインページを返す"""
-        return render_template('index.html')
+        """ホーム画面（メニュー）を返す"""
+        return render_template('home.html')
+
+    @app.route('/estimate')
+    def estimate():
+        """見積書作成ページを返す"""
+        return render_template('estimate.html')
+
+    @app.route('/invoice')
+    def invoice():
+        """請求書作成ページを返す"""
+        return render_template('invoice.html')
+
+    @app.route('/order')
+    def order():
+        """注文書ページを返す"""
+        return render_template('order.html')
+
+    @app.route('/attendance')
+    def attendance():
+        """勤務管理ページを返す"""
+        return render_template('attendance.html')
 
     @app.route('/api/config', methods=['GET'])
     def get_config():

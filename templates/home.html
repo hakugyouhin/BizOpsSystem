@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BizOpsSystem - ホーム</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .main-title {
+            text-align: center;
+            color: white;
+            font-size: 42px;
+            margin-bottom: 50px;
+            font-weight: 300;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+        }
+
+        .menu-category {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .menu-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .menu-items {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .menu-item {
+            display: block;
+            padding: 16px 20px;
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .menu-item-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .menu-item-text {
+            display: inline;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 60px;
+            padding: 20px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main-title {
+                font-size: 32px;
+                margin-bottom: 30px;
+            }
+
+            .menu-category {
+                padding: 20px;
+            }
+
+            .category-title {
+                font-size: 20px;
+            }
+
+            .menu-item {
+                padding: 14px 16px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        センチュリーアクセス＆サイエンス（CSC）株式会社
+    </header>
+
+    <div class="container">
+        <div class="main-title">BizOpsSystem</div>
+
+        <div class="menu-grid">
+            <!-- 契約管理 -->
+            <div class="menu-category">
+                <div class="category-title">📋 契約管理</div>
+                <div class="menu-items">
+                    <a href="/estimate" class="menu-item">
+                        <span class="menu-item-icon">📄</span>
+                        <span class="menu-item-text">10. 見積書作成</span>
+                    </a>
+                    <a href="/invoice" class="menu-item">
+                        <span class="menu-item-icon">💰</span>
+                        <span class="menu-item-text">20. 自社請求書作成</span>
+                    </a>
+                    <a href="/order" class="menu-item">
+                        <span class="menu-item-icon">📦</span>
+                        <span class="menu-item-text">30. 自社注文書</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 総務管理 -->
+            <div class="menu-category">
+                <div class="category-title">👥 総務管理</div>
+                <div class="menu-items">
+                    <a href="/attendance" class="menu-item">
+                        <span class="menu-item-icon">📊</span>
+                        <span class="menu-item-text">10. 勤務管理</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 BizOpsSystem. All rights reserved.</p>
+        <div>
+            <a href="/health" class="footer-link">システム状態</a>
+            <span>|</span>
+            <a href="/" class="footer-link">ホーム</a>
+        </div>
+    </div>
+</body>
+</html>
