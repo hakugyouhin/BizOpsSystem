@@ -60,6 +60,12 @@ def download_file_from_drive(file_id, output_path=None):
                 done = False
                 while not done:
                     _, done = downloader.next_chunk()
+
+            # ファイルサイズを確認
+            file_size = Path(output_path).stat().st_size
+            if file_size == 0:
+                raise Exception(f"ダウンロードしたファイルが空です")
+
             return None
         else:
             # メモリに保持

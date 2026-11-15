@@ -589,7 +589,14 @@ def generate_estimate_sheets(management_file, output_folder):
             app.logger.info(f'見積書生成処理を開始します')
 
         # 管理ファイルを開く
-        wb_mgmt = load_workbook(management_file)
+        try:
+            wb_mgmt = load_workbook(management_file)
+        except Exception as e:
+            if app:
+                app.logger.error(f'Excel ファイルを開く際のエラー: {e}')
+                app.logger.error(f'ファイルパス: {management_file}')
+                app.logger.error(f'ファイルサイズ: {Path(management_file).stat().st_size} bytes')
+            raise Exception(f"Excel ファイルを開けません: {str(e)}")
 
         if '見積書' not in wb_mgmt.sheetnames:
             return {'success': False, 'message': 'シート「見積書」が見つかりません'}
