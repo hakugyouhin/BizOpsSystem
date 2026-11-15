@@ -571,7 +571,7 @@ def generate_estimate_sheets(management_file, output_folder):
     try:
         management_path = Path(management_file)
         output_path = Path(output_folder)
-        template_path = Path(r'C:\Server\BizOps\OfficeTemplate\見積書テンプレート.xlsx')
+        template_path = Path(__file__).parent.parent / 'OfficeTemplate' / '見積書テンプレート.xlsx'
 
         if not management_path.exists():
             return {'success': False, 'message': f'管理ファイルが見つかりません: {management_path}'}
