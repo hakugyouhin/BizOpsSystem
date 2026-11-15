@@ -407,10 +407,25 @@ def register_api_routes(flask_app, estimate_data_dict):
             for filename in generated_files:
                 app.logger.info(f"  - {filename}")
 
+            # Google Drive へアップロード
+            uploaded_files = []
+            drive_folder_id = os.environ.get('DRIVE_OUTPUT_FOLDER_ID', '')
+
+            if drive_folder_id:
+                for filename in generated_files:
+                    try:
+                        file_path = output_path / filename
+                        file_id = upload_file_to_drive(str(file_path), drive_folder_id, filename)
+                        uploaded_files.append({'filename': filename, 'file_id': file_id})
+                        app.logger.info(f'Google Drive にアップロード: {filename} (ID: {file_id})')
+                    except Exception as upload_error:
+                        app.logger.warning(f'Google Drive アップロードエラー（{filename}）: {upload_error}')
+
             return jsonify({
                 'success': True,
-                'message': f'見積書が生成されました（{len(generated_files)}件）',
+                'message': f'見積書が生成されました（{len(generated_files)}件）' + (f'\nGoogle Drive にアップロード: {len(uploaded_files)}件' if uploaded_files else ''),
                 'files': generated_files,
+                'uploaded': uploaded_files,
                 'count': len(generated_files),
                 'output_folder': str(output_path)
             })
@@ -453,10 +468,25 @@ def register_api_routes(flask_app, estimate_data_dict):
             result = generate_pdf_from_excel(excel_files_param, output_folder)
 
             if result['success']:
+                # Google Drive へアップロード
+                uploaded_files = []
+                drive_folder_id = os.environ.get('DRIVE_OUTPUT_FOLDER_ID', '')
+
+                if drive_folder_id:
+                    for filename in result['files']:
+                        try:
+                            file_path = output_path / filename
+                            file_id = upload_file_to_drive(str(file_path), drive_folder_id, filename)
+                            uploaded_files.append({'filename': filename, 'file_id': file_id})
+                            app.logger.info(f'Google Drive にアップロード: {filename} (ID: {file_id})')
+                        except Exception as upload_error:
+                            app.logger.warning(f'Google Drive アップロードエラー（{filename}）: {upload_error}')
+
                 return jsonify({
                     'success': True,
-                    'message': result['message'],
+                    'message': result['message'] + (f'\nGoogle Drive にアップロード: {len(uploaded_files)}件' if uploaded_files else ''),
                     'files': result['files'],
+                    'uploaded': uploaded_files,
                     'count': len(result['files']),
                     'failed_count': len(result['failed']),
                     'output_folder': str(output_path)
