@@ -576,8 +576,11 @@ def generate_estimate_sheets(management_file, output_folder):
         if not management_path.exists():
             return {'success': False, 'message': f'管理ファイルが見つかりません: {management_path}'}
 
+        # テンプレートファイルが存在しない場合は、管理ファイルをテンプレートとして使用
         if not template_path.exists():
-            return {'success': False, 'message': f'テンプレートファイルが見つかりません: {template_path}'}
+            if app:
+                app.logger.info(f'テンプレートファイルが見つかりません。管理ファイルをテンプレートとして使用します')
+            template_path = management_path
 
         if not output_path.exists():
             output_path.mkdir(parents=True, exist_ok=True)
