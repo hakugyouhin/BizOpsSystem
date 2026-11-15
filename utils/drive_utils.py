@@ -8,6 +8,7 @@ import os
 import io
 from pathlib import Path
 from google.oauth2.service_account import Credentials
+from google.auth import default
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 
@@ -18,12 +19,16 @@ def get_drive_service():
     """Google Drive API サービスを取得"""
     try:
         credentials_path = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-        if not credentials_path:
-            return None
 
-        credentials = Credentials.from_service_account_file(
-            credentials_path, scopes=SCOPES
-        )
+        if credentials_path:
+            # サービスアカウント キーファイルがある場合
+            credentials = Credentials.from_service_account_file(
+                credentials_path, scopes=SCOPES
+            )
+        else:
+            # デフォルトのアプリケーション認証情報を使う（Cloud Run推奨）
+            credentials, project = default(scopes=SCOPES)
+
         return build('drive', 'v3', credentials=credentials)
     except Exception as e:
         print(f"Google Drive API 初期化エラー: {e}")
